@@ -11,10 +11,10 @@ class SteamID(sqlalchemy.types.TypeDecorator):
     cache_ok = True
 
     def process_bind_param(self, value: steam.steamid.SteamID, dialect):
-        return value.steam64
+        return value.as_64
 
     def process_literal_param(self, value: steam.steamid.SteamID, dialect):
-        return value.steam64
+        return value.as_64
 
     def process_result_value(self, value: int, dialect):
         return steam.steamid.SteamID(value)
