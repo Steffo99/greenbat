@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "greenbat"
+version = "0.1.0"
+description = ""
+authors = ["Stefano Pigozzi <me@steffo.eu>"]
+license = "AGPL-3.0-or-later"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+fastapi = "^0.65.1"
+SQLAlchemy = "^1.4.17"
+alembic = "^1.6.5"
+royalnet = "^6.5.6"
+steam = "^1.2.0"
+psycopg2 = "^2.8.6"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
