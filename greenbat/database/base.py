@@ -18,11 +18,10 @@ class User(Base):
 
     last_update = s.Column(s.DateTime, nullable=False)
     name = s.Column(s.String, nullable=False)
-    nickname = s.Column(s.String, nullable=False)
-    avatar = s.Column(s.String, nullable=False)
-    email = s.Column(s.String, nullable=False)
+    picture = s.Column(s.String, nullable=False)
 
-    games_owned = so.relationship("User", back_populates="owner")
+    elements = so.relationship("Element", back_populates="owner")
+    steams = so.relationship("Steam", back_populates="owner")
 
     def __str__(self):
         return self.name
@@ -38,7 +37,7 @@ class Steam(Base):
 
     owner_id = s.Column(s.String, s.ForeignKey("users.sub"), nullable=False)
 
-    owner = so.relationship("User", back_populates="steam_accounts")
+    owner = so.relationship("User", back_populates="steams")
 
 
 class Element(Base):
@@ -52,7 +51,8 @@ class Element(Base):
     owner_id = s.Column(s.String, s.ForeignKey("users.sub"), nullable=False)
     game_id = s.Column(sp.UUID(as_uuid=True), s.ForeignKey("games.uuid"), nullable=False)
 
-    owner = so.relationship("User", back_populates="games_owned")
+    owner = so.relationship("User", back_populates="elements")
+    game = so.relationship("Game", back_populates="elements")
 
 
 class Game(Base):
@@ -64,3 +64,5 @@ class Game(Base):
     uuid = s.Column(sp.UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
 
     name = s.Column(s.String, nullable=False)
+
+    elements = so.relationship("Element", back_populates="game")

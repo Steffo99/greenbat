@@ -1,9 +1,9 @@
 import logging.config
 import alembic
 
-from greenbat.database.base import Base
-from greenbat.database.engine import lazy_engine
-from greenbat.config import lazy_config
+import greenbat.database.base
+import greenbat.database.engine
+import greenbat.config
 
 
 # Set up logging
@@ -11,7 +11,7 @@ logging.config.fileConfig(alembic.context.config.config_file_name)
 
 
 # Get the metadata
-target_metadata = Base.metadata
+target_metadata = greenbat.database.base.Base.metadata
 
 
 def run_migrations_offline():
@@ -26,10 +26,9 @@ def run_migrations_offline():
     script output.
 
     """
-    royalpack_config = lazy_config.evaluate()
 
     alembic.context.configure(
-        url=royalpack_config["database.uri"],
+        url=greenbat.config.cfg["database.uri"],
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
@@ -46,9 +45,7 @@ def run_migrations_online():
     and associate a connection with the context.
 
     """
-    engine = lazy_engine.evaluate()
-
-    with engine.connect() as connection:
+    with greenbat.database.engine.engine.connect() as connection:
         alembic.context.configure(
             connection=connection, target_metadata=target_metadata
         )

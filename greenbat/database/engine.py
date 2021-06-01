@@ -1,18 +1,11 @@
 import sqlalchemy.orm
-import royalnet.lazy
 import greenbat.config
 
 
-lazy_engine = royalnet.lazy.Lazy(
-    lambda c: sqlalchemy.create_engine(c["database.uri"]), c=greenbat.config.lazy_config
-)
-"""
-The uninitialized sqlalchemy engine.
-"""
+engine = sqlalchemy.create_engine(greenbat.config.cfg["database.uri"])
+Session = sqlalchemy.orm.sessionmaker(bind=engine)
 
-lazy_session_class = royalnet.lazy.Lazy(
-    lambda e: sqlalchemy.orm.sessionmaker(bind=e), e=lazy_engine
-)
-"""
-The uninitialized sqlalchemy session class.
-"""
+
+def dep_database():
+    with Session(future=True) as session:
+        yield session

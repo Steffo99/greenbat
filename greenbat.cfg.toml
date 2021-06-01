@@ -1,2 +1,9 @@
 [database]
 uri = "postgresql://steffo@/greenbat"
+
+[authzero]
+domain = "ryg.eu.auth0.com"
+
+[api]
+alloworigins = ["*"]
+port = 30044
