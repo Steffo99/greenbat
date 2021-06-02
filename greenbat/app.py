@@ -1,6 +1,7 @@
 import fastapi
 import fastapi.middleware.cors
 import pkg_resources
+import greenbat.routes.users
 import greenbat.routes.games
 
 
@@ -10,4 +11,5 @@ app = fastapi.FastAPI(
     version=pkg_resources.get_distribution("greenbat").version,
 )
 
+app.include_router(greenbat.routes.users.router, prefix="/users")
 app.include_router(greenbat.routes.games.router, prefix="/games")
