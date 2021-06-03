@@ -7,9 +7,6 @@ from greenbat.database.tables._base import Base
 
 
 class User(Base):
-    """
-    An user, as returned by Auth0.
-    """
     __tablename__ = "users"
 
     sub = s.Column(s.String, primary_key=True)
@@ -19,7 +16,7 @@ class User(Base):
     picture = s.Column(s.String, nullable=False)
 
     elements = so.relationship("Element", back_populates="owner")
-    steams = so.relationship("Steam", back_populates="owner")
+    accounts_steam = so.relationship("AccountSteam", back_populates="owner")
 
     def __str__(self):
         return self.name

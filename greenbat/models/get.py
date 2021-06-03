@@ -5,23 +5,32 @@ import greenbat.models._base as base
 import greenbat.models.edit as edit
 
 
-class Element(edit.Element):
+class ElementGet(edit.ElementEdit):
     uuid: pydantic.UUID4
     owner_id: str
     game_id: pydantic.UUID4
 
 
-class Game(edit.Game):
-    uuid: pydantic.UUID4
-    name: str
+class MetadataSteamGet(edit.MetadataSteamEdit):
+    pass
 
 
-class Steam(edit.Steam):
+class MetadataCustomGet(edit.MetadataCustomEdit):
+    pass
+
+
+class GameGet(edit.GameEdit):
+    id: int
+    metadata_steam: MetadataSteamGet
+    metadata_custom: MetadataCustomGet
+
+
+class AccountSteamGet(edit.AccountSteamEdit):
     steamid: types.SteamID
     owner_id: str
 
 
-class User(edit.User):
+class UserGet(edit.UserEdit):
     sub: str
     last_update: datetime.datetime
     name: str

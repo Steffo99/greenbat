@@ -1,7 +1,8 @@
 import logging.config
 import alembic
 
-import greenbat.database.base
+# noinspection PyProtectedMember
+from greenbat.database.tables._base import Base
 import greenbat.database.engine
 import greenbat.config
 
@@ -11,7 +12,7 @@ logging.config.fileConfig(alembic.context.config.config_file_name)
 
 
 # Get the metadata
-target_metadata = greenbat.database.base.Base.metadata
+target_metadata = Base.metadata
 
 
 def run_migrations_offline():

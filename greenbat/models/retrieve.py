@@ -3,19 +3,27 @@ import greenbat.models._base as base
 import greenbat.models.get as get
 
 
-class Element(get.Element):
-    owner: get.User
-    game: get.Game
+class ElementRetrieve(get.ElementGet):
+    owner: get.UserGet
+    game: get.GameGet
 
 
-class Game(get.Game):
-    elements: list[get.Element]
+class MetadataSteamEdit(base.ORMModel):
+    pass
 
 
-class Steam(get.Steam):
-    owner: get.User
+class MetadataCustomEdit(base.ORMModel):
+    pass
 
 
-class User(get.Steam):
-    elements: list[get.Element]
-    steams: list[get.Steam]
+class GameRetrieve(get.GameGet):
+    elements: list[get.ElementGet]
+
+
+class AccountSteamRetrieve(get.AccountSteamGet):
+    owner: get.UserGet
+
+
+class UserRetrieve(get.UserGet):
+    elements: list[get.ElementGet]
+    accounts_steam: list[get.AccountSteamGet]

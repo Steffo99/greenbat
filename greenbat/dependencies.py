@@ -7,17 +7,17 @@ import greenbat.auth
 import datetime
 
 
-dep_user = greenbat.auth.Auth0User(domain=greenbat.config.cfg["authzero.domain"])
+dep_claims = greenbat.auth.Auth0User(domain=greenbat.config.cfg["authzero.domain"])
 
 
-def dep_database():
+def dep_session():
     with greenbat.database.engine.Session(future=True) as session:
         yield session
 
 
-def dep_dbuser(
-        session: sqlalchemy.orm.Session = f.Depends(dep_database),
-        claims: greenbat.auth.Auth0AccessClaims = f.Depends(dep_user),
+def dep_user(
+        session: sqlalchemy.orm.Session = f.Depends(dep_session),
+        claims: greenbat.auth.Auth0AccessClaims = f.Depends(dep_claims),
 ):
     db_user = tables.User(
         sub=claims.sub,
@@ -26,4 +26,5 @@ def dep_dbuser(
         picture=claims.picture,
     )
     session.merge(db_user)
+    session.commit()
     return db_user
