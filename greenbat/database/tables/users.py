@@ -17,6 +17,7 @@ class User(Base):
 
     elements = so.relationship("Element", back_populates="owner")
     accounts_steam = so.relationship("AccountSteam", back_populates="owner")
+    metadata_custom_owned = so.relationship("MetadataCustom", back_populates="creator")
 
     def __str__(self):
         return self.name

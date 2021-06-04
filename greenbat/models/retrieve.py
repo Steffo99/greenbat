@@ -8,12 +8,12 @@ class ElementRetrieve(get.ElementGet):
     game: get.GameGet
 
 
-class MetadataSteamEdit(base.ORMModel):
+class MetadataSteamRetrieve(get.MetadataSteamGet):
     pass
 
 
-class MetadataCustomEdit(base.ORMModel):
-    pass
+class MetadataCustomRetrieve(get.MetadataCustomGet):
+    creator: get.UserGet
 
 
 class GameRetrieve(get.GameGet):
@@ -27,3 +27,4 @@ class AccountSteamRetrieve(get.AccountSteamGet):
 class UserRetrieve(get.UserGet):
     elements: list[get.ElementGet]
     accounts_steam: list[get.AccountSteamGet]
+    metadata_custom_owned: list[get.MetadataCustomGet]

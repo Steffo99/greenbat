@@ -16,3 +16,4 @@ class MetadataCustom(Base):
     url = s.Column(s.String)
 
     game = so.relationship("Game", back_populates="metadata_custom", uselist=False)
+    creator = so.relationship("User", back_populates="metadata_custom_owned")

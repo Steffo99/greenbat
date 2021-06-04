@@ -14,7 +14,7 @@ router = f.APIRouter(
 
 @router.get(
     "/",
-    summary="List all the registered users.",
+    summary="List all the registered users",
     response_model=list[models.get.UserGet],
 )
 def users_list(
@@ -26,7 +26,7 @@ def users_list(
 
 @router.get(
     "/me",
-    summary="Retrieve details about the currently logged in user.",
+    summary="Retrieve details about the currently logged in user",
     response_model=models.retrieve.UserRetrieve,
 )
 def users_retrieve_me(
@@ -38,10 +38,10 @@ def users_retrieve_me(
 
 @router.get(
     "/{sub}",
-    summary="Retrieve details about a single registered user.",
+    summary="Retrieve details about a single registered user",
     response_model=models.retrieve.UserRetrieve,
     responses={
-        404: {"message": "Not found"},
+        404: {},
     }
 )
 def users_retrieve(

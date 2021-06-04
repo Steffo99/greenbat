@@ -1,4 +1,5 @@
 import fastapi as f
+import starlette.status as s
 import sqlalchemy.orm
 import greenbat.database.engine
 import greenbat.database.tables as tables
@@ -28,3 +29,10 @@ def dep_user(
     session.merge(db_user)
     session.commit()
     return db_user
+
+
+def dep_perms(*perms: str):
+    def actual_dep(claims: greenbat.auth.Auth0AccessClaims = f.Depends(dep_claims)):
+        if not claims.has_permissions(*perms):
+            raise f.HTTPException(s.HTTP_403_FORBIDDEN, "Insufficient permissions or scope.")
+    return actual_dep

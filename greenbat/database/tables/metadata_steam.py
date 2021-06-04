@@ -11,7 +11,7 @@ class MetadataSteam(Base):
 
     game_id = s.Column(s.Integer, s.ForeignKey("games.id"), primary_key=True)
 
-    appid = s.Column(s.BigInteger, nullable=False)
+    appid = s.Column(s.BigInteger, nullable=False, unique=True)
     title = s.Column(s.String, nullable=False)
 
     game = so.relationship("Game", back_populates="metadata_steam", uselist=False)

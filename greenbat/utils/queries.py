@@ -35,7 +35,7 @@ def edit(session: so.Session, table, condition, data: pydantic.BaseModel):
     if obj is None:
         raise f.HTTPException(404, f"{table.__tablename__} not found")
     for key, val in data.dict().items():
-        obj.__setattribute__(key, val)
+        obj.__setattr__(key, val)
     session.commit()
     return obj
 
