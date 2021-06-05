@@ -7,9 +7,7 @@ import greenbat.database.tables as tables
 import greenbat.utils.queries as queries
 
 
-router = f.APIRouter(
-    tags=["Users"],
-)
+router = f.APIRouter()
 
 
 @router.get(
