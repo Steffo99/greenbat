@@ -7,3 +7,6 @@ domain = "ryg.eu.auth0.com"
 [api]
 alloworigins = ["*"]
 port = 30044
+
+[api.list]
+maxlimit = 500

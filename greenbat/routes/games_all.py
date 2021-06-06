@@ -11,6 +11,7 @@ import greenbat.dependencies as deps
 import greenbat.database.tables as tables
 import greenbat.utils.queries as queries
 import greenbat.auth as auth
+from greenbat.config import cfg
 
 
 router = f.APIRouter()
@@ -21,11 +22,13 @@ router = f.APIRouter()
     summary="List all games",
     response_model=list[models.get.GameGet]
 )
-def games_list(
+def _(
         *,
         session: so.Session = f.Depends(deps.dep_session),
+        limit: int = f.Query(cfg["api.list.maxlimit"], le=cfg["api.list.maxlimit"]),
+        offset: int = f.Query(0, ge=0),
 ):
-    return queries.list_(session, tables.Game)
+    return queries.list_(session=session, table=tables.Game, limit=limit, offset=offset)
 
 
 @router.get(
@@ -38,12 +41,12 @@ def games_list(
         },
     },
 )
-def games_retrieve_all(
+def _(
         *,
         session: so.Session = f.Depends(deps.dep_session),
         id: int = f.Path(...),
 ):
-    return queries.retrieve(session, tables.Game, tables.Game.uuid == id)
+    return queries.retrieve(session=session, table=tables.Game, condition=tables.Game.uuid == id)
 
 
 @router.delete(
@@ -56,11 +59,10 @@ def games_retrieve_all(
             "description": "No game with the specified Greenbat `id` exists in the database",
         },
     },
-    dependencies=[f.Depends(deps.dep_perms("destroy:game_all"))],
 )
-def games_destroy_custom(
+def _(
         *,
         session: so.Session = f.Depends(deps.dep_session),
         id: int = f.Path(...),
 ):
-    queries.destroy(session, tables.Game, tables.Game.uuid == id)
+    queries.destroy(session=session, table=tables.Game, condition=tables.Game.uuid == id)

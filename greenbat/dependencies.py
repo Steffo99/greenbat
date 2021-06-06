@@ -26,7 +26,7 @@ def dep_user(
         name=claims.name,
         picture=claims.picture,
     )
-    session.merge(db_user)
+    db_user = session.merge(db_user)
     session.commit()
     return db_user
 

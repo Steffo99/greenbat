@@ -5,6 +5,7 @@ import greenbat.models as models
 import greenbat.dependencies as deps
 import greenbat.database.tables as tables
 import greenbat.utils.queries as queries
+from greenbat.config import cfg
 
 
 router = f.APIRouter()
@@ -15,11 +16,13 @@ router = f.APIRouter()
     summary="List all the registered users",
     response_model=list[models.get.UserGet],
 )
-def users_list(
+def _(
         *,
         session: so.Session = f.Depends(deps.dep_session),
+        limit: int = f.Query(cfg["api.list.maxlimit"], le=cfg["api.list.maxlimit"]),
+        offset: int = f.Query(0, ge=0),
 ):
-    return queries.list_(session, tables.User)
+    return queries.list_(session=session, table=tables.User, limit=limit, offset=offset)
 
 
 @router.get(
@@ -27,7 +30,7 @@ def users_list(
     summary="Retrieve details about the currently logged in user",
     response_model=models.retrieve.UserRetrieve,
 )
-def users_retrieve_me(
+def _(
         *,
         user: tables.User = f.Depends(deps.dep_user),
 ):
@@ -42,9 +45,9 @@ def users_retrieve_me(
         404: {},
     }
 )
-def users_retrieve(
+def _(
         *,
         session: so.Session = f.Depends(deps.dep_session),
         sub: str = f.Path(...),
 ):
-    return queries.retrieve(session, tables.User, tables.User.sub == sub)
+    return queries.retrieve(session=session, table=tables.User, condition=tables.User.sub == sub)

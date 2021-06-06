@@ -1,3 +1,4 @@
+import typing as t
 import pydantic
 import datetime
 import greenbat.models._types as types
@@ -6,9 +7,8 @@ import greenbat.models.edit as edit
 
 
 class ElementGet(edit.ElementEdit):
-    uuid: pydantic.UUID4
+    id: int
     owner_id: str
-    game_id: pydantic.UUID4
 
 
 class MetadataSteamGet(edit.MetadataSteamEdit):
@@ -21,8 +21,8 @@ class MetadataCustomGet(edit.MetadataCustomEdit):
 
 class GameGet(edit.GameEdit):
     id: int
-    metadata_steam: MetadataSteamGet
-    metadata_custom: MetadataCustomGet
+    metadata_steam: t.Optional[MetadataSteamGet]
+    metadata_custom: t.Optional[MetadataCustomGet]
 
 
 class AccountSteamGet(edit.AccountSteamEdit):

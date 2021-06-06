@@ -11,6 +11,7 @@ import greenbat.dependencies as deps
 import greenbat.database.tables as tables
 import greenbat.utils.queries as queries
 import greenbat.auth as auth
+from greenbat.config import cfg
 
 
 router = f.APIRouter()
@@ -21,23 +22,39 @@ router = f.APIRouter()
     summary="List all custom games",
     response_model=list[models.get.GameGet],
 )
-def games_retrieve_steam(
+def _(
         *,
         session: so.Session = f.Depends(deps.dep_session),
+        limit: int = f.Query(cfg["api.list.maxlimit"], le=cfg["api.list.maxlimit"]),
+        offset: int = f.Query(0, ge=0),
+):
+    return queries.list_joined(session=session, tables=[tables.Game, tables.MetadataCustom], limit=limit, offset=offset)
+
+
+@router.get(
+    "/mine/",
+    summary="List all custom games created by the currently logged in user",
+    response_model=list[models.get.GameGet],
+)
+def _(
+        *,
+        session: so.Session = f.Depends(deps.dep_session),
+        user: tables.User = f.Depends(deps.dep_user),
+        limit: int = f.Query(cfg["api.list.maxlimit"], le=cfg["api.list.maxlimit"]),
+        offset: int = f.Query(0, ge=0),
 ):
     return session.execute(
-        ss.select(tables.Game).join(tables.MetadataCustom)
-    ).fetchall()
+        ss.select(tables.Game).join(tables.MetadataCustom).where(tables.MetadataCustom.creator == user).limit(limit).offset(offset)
+    ).all()
 
 
 @router.post(
-    "/",
+    "/mine/",
     summary="Create a new custom game",
     response_model=models.retrieve.GameRetrieve,
     status_code=status.HTTP_201_CREATED,
-    dependencies=[f.Depends(deps.dep_perms("create:game_custom"))]
 )
-def games_create_custom(
+def _(
         *,
         session: so.Session = f.Depends(deps.dep_session),
         user: tables.User = f.Depends(deps.dep_user),
@@ -51,22 +68,9 @@ def games_create_custom(
     return game
 
 
-@router.get(
-    "/mine/",
-    summary="List all custom games created by the currently logged in user",
-    response_model=list[models.get.GameGet],
-)
-def games_retrieve_steam(
-        *,
-        session: so.Session = f.Depends(deps.dep_session),
-        user: tables.User = f.Depends(deps.dep_user),
-):
-    return queries.retrieve(session, tables.Game, tables.Game.metadata_custom.creator_sub == user.sub)
-
-
 @router.delete(
     "/mine/{id}",
-    summary="Delete a custom game you created yourself",
+    summary="Delete a custom game created by the currently logged in user",
     status_code=status.HTTP_204_NO_CONTENT,
     response_class=f.Response,
     responses={
@@ -82,21 +86,37 @@ def games_retrieve_steam(
             "model": models.retrieve.GameRetrieve,
         }
     },
-    dependencies=[f.Depends(deps.dep_perms("destroy:game_custom"))],
 )
-def games_destroy_custom(
+def _(
         *,
         session: so.Session = f.Depends(deps.dep_session),
         user: tables.User = f.Depends(deps.dep_user),
         id: int = f.Path(...),
 ):
-    game = queries.retrieve(session, tables.Game, tables.Game.uuid == id)
+    game = queries.retrieve(session, tables.Game, tables.Game.id == id)
 
     if not game.metadata_custom:
         raise f.HTTPException(405, game)
 
-    if not game.creator == user:
+    if not game.metadata_custom.creator == user:
         raise f.HTTPException(403, game)
 
     session.delete(game)
     session.commit()
+
+
+@router.get(
+    "/of/{sub}/",
+    summary="List all custom games created by the specified user",
+    response_model=list[models.get.GameGet],
+)
+def _(
+        *,
+        session: so.Session = f.Depends(deps.dep_session),
+        sub: str = f.Path(...),
+        limit: int = f.Query(cfg["api.list.maxlimit"], le=cfg["api.list.maxlimit"]),
+        offset: int = f.Query(0, ge=0),
+):
+    return session.execute(
+        ss.select(tables.Game).join(tables.MetadataCustom).where(tables.MetadataCustom.creator_sub == sub).limit(limit).offset(offset)
+    ).fetchall()
