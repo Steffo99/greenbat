@@ -9,6 +9,7 @@ import starlette.status as status
 import greenbat.models as models
 import greenbat.dependencies as deps
 import greenbat.database.tables as tables
+import greenbat.database.enums as enums
 import greenbat.utils.queries as queries
 import greenbat.auth as auth
 from greenbat.config import cfg
@@ -152,3 +153,49 @@ def _(
         id: int = f.Path(...),
 ):
     queries.destroy(session, tables.Element, ss.and_(tables.Element.id == id, tables.Element.owner == user))
+
+
+@router.patch(
+    "/mine/{id}/rating",
+    summary="Rate an element owned by the currently logged in user.",
+    status_code=status.HTTP_200_OK,
+    response_model=models.retrieve.ElementRetrieve,
+    responses={
+        404: {
+            "description": "No element with the specified `id` is owned by the user",
+        },
+    },
+)
+def _(
+        *,
+        session: so.Session = f.Depends(deps.dep_session),
+        user: tables.User = f.Depends(deps.dep_user),
+        id: int = f.Path(...),
+        rating: enums.Rating = f.Body(...)
+):
+    element = queries.retrieve(session, tables.Element, ss.and_(tables.Element.id == id, tables.Element.owner == user))
+    element.rating = rating
+    session.commit()
+
+
+@router.patch(
+    "/mine/{id}/completition",
+    summary="Change completition for an element owned by the currently logged in user.",
+    status_code=status.HTTP_200_OK,
+    response_model=models.retrieve.ElementRetrieve,
+    responses={
+        404: {
+            "description": "No element with the specified `id` is owned by the user",
+        },
+    },
+)
+def _(
+        *,
+        session: so.Session = f.Depends(deps.dep_session),
+        user: tables.User = f.Depends(deps.dep_user),
+        id: int = f.Path(...),
+        completition: enums.Completition = f.Body(...)
+):
+    element = queries.retrieve(session, tables.Element, ss.and_(tables.Element.id == id, tables.Element.owner == user))
+    element.completition = completition
+    session.commit()
