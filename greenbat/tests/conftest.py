@@ -14,12 +14,12 @@ from greenbat.app import app
 from greenbat.database.engine import Session as DatabaseSession
 
 
-@pytest.fixture(scope="package", autouse=True)
+@pytest.fixture(scope="package", autouse=True, name="ftc")
 def fastapi_test_client() -> fastapi.testclient.TestClient:
     return fastapi.testclient.TestClient(app)
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="function", name="session")
 def database_session() -> sqlalchemy.orm.Session:
     with DatabaseSession() as session:
         yield session
