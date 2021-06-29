@@ -42,7 +42,9 @@ def _(
     summary="Retrieve details about a single registered user",
     response_model=models.retrieve.UserRetrieve,
     responses={
-        404: {},
+        404: {
+            "description": "User not found",
+        },
     }
 )
 def _(
