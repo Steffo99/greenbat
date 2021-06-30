@@ -50,6 +50,6 @@ def _(
 def _(
         *,
         session: so.Session = f.Depends(deps.dep_session),
-        sub: str = f.Path(...),
+        sub: str = f.Path(..., example="auth0|5ed2debf7308300c1ea230c3"),
 ):
     return queries.retrieve(session=session, table=tables.User, condition=tables.User.sub == sub)
