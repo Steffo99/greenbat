@@ -9,6 +9,6 @@ class Game(Base):
 
     id = s.Column(s.Integer, primary_key=True)
 
-    elements = so.relationship("Element", back_populates="game")
-    metadata_steam = so.relationship("MetadataSteam", back_populates="game", uselist=False)
-    metadata_custom = so.relationship("MetadataCustom", back_populates="game", uselist=False)
+    elements = so.relationship("Element", back_populates="game", cascade="all, delete-orphan")
+    metadata_steam = so.relationship("MetadataSteam", back_populates="game", uselist=False, cascade="all, delete-orphan")
+    metadata_custom = so.relationship("MetadataCustom", back_populates="game", uselist=False, cascade="all, delete-orphan")
