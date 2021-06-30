@@ -12,6 +12,7 @@ import greenbat.database.tables as tables
 import greenbat.utils.queries as queries
 import greenbat.auth as auth
 from greenbat.config import cfg
+from greenbat.utils.indoc import indoc
 
 
 router = f.APIRouter()
@@ -20,6 +21,9 @@ router = f.APIRouter()
 @router.get(
     "/",
     summary="List all custom games",
+    description=indoc("""
+        Get a paginated array listing all games with "custom" metadata registered on Greenbat.
+    """),
     response_model=list[models.get.GameGet],
 )
 def _(
@@ -34,6 +38,9 @@ def _(
 @router.get(
     "/mine/",
     summary="List all custom games created by the currently logged in user",
+    description=indoc("""
+        Get a paginated array listing all games with "custom" metadata created by the currently logged in user.
+    """),
     response_model=list[models.get.GameGet],
 )
 def _(
@@ -51,6 +58,9 @@ def _(
 @router.post(
     "/mine/",
     summary="Create a new custom game",
+    description=indoc("""
+        Create a new game with "custom" metadata, and set the currently logged in user as its owner.
+    """),
     response_model=models.retrieve.GameRetrieve,
     status_code=status.HTTP_201_CREATED,
 )
@@ -71,6 +81,10 @@ def _(
 @router.delete(
     "/mine/{id}",
     summary="Delete a custom game created by the currently logged in user",
+    description=indoc("""
+        Permanently delete the game with the specified `id`, all its metadata **AND all elements attached to it**, 
+        but only if the currently logged in user is its owner.
+    """),
     status_code=status.HTTP_204_NO_CONTENT,
     response_class=f.Response,
     responses={
@@ -91,7 +105,7 @@ def _(
         *,
         session: so.Session = f.Depends(deps.dep_session),
         user: tables.User = f.Depends(deps.dep_user),
-        id: int = f.Path(...),
+        id: int = f.Path(..., example=1),
 ):
     game = queries.retrieve(session, tables.Game, tables.Game.id == id)
 
@@ -108,6 +122,9 @@ def _(
 @router.get(
     "/of/{sub}/",
     summary="List all custom games created by the specified user",
+    description=indoc("""
+        Get a paginated array listing all games with "custom" metadata created by the currently logged in user.
+    """),
     response_model=list[models.get.GameGet],
 )
 def _(
