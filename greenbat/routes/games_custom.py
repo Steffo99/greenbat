@@ -23,6 +23,8 @@ router = f.APIRouter()
     summary="List all custom games",
     description=indoc("""
         Get a paginated array listing all games with "custom" metadata registered on Greenbat.
+        
+        "Custom" games have freeform metadata which can be edited at any time by their owner.
     """),
     response_model=list[models.get.GameGet],
 )
