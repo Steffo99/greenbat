@@ -206,6 +206,7 @@ def _(
     element = queries.retrieve(session, tables.Element, ss.and_(tables.Element.id == id, tables.Element.owner == user))
     element.rating = rating
     session.commit()
+    return element
 
 
 @router.patch(
@@ -232,3 +233,4 @@ def _(
     element = queries.retrieve(session, tables.Element, ss.and_(tables.Element.id == id, tables.Element.owner == user))
     element.completition = completition
     session.commit()
+    return element
