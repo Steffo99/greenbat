@@ -13,6 +13,7 @@ import greenbat.database.tables as tables
 import greenbat.utils.queries as queries
 import greenbat.auth as auth
 from greenbat.config import cfg
+from greenbat.utils.indoc import indoc
 
 
 router = f.APIRouter()
@@ -21,6 +22,11 @@ router = f.APIRouter()
 @router.get(
     "/",
     summary="List all Steam games",
+    description=indoc("""
+        Get a paginated array listing all games with "steam" metadata registered on Greenbat.
+        
+        "Steam" games have an associated Steam store page, and can be identified by their Steam `appid`.
+    """),
     response_model=list[models.get.GameGet],
 )
 def _(
@@ -35,6 +41,9 @@ def _(
 @router.get(
     "/{appid}",
     summary="Retrieve a Steam game by Steam appid",
+    description=indoc("""
+        Get detailed information about the game with the specified Steam `appid`. 
+    """),
     response_model=models.retrieve.GameRetrieve,
     responses={
         404: {
@@ -45,7 +54,20 @@ def _(
 def _(
         *,
         session: so.Session = f.Depends(deps.dep_session),
-        appid: int = f.Path(...),
+        appid: int = f.Path(..., examples={
+            "Dota 2": {
+                "name": "Dota 2",
+                "value": 570,
+            },
+            "Counter-Strike: Global Offensive": {
+                "name": "Counter-Strike: Global Offensive",
+                "value": 730,
+            },
+            "Baba is You": {
+                "name": "Baba is You",
+                "value": 736260,
+            }
+        }),
 ):
     try:
         return session.execute(
@@ -58,6 +80,9 @@ def _(
 @router.post(
     "/",
     summary="Create a new Steam game",
+    description=indoc("""
+        Manually create a single Steam game.
+    """),
     response_model=models.retrieve.GameRetrieve,
     status_code=status.HTTP_201_CREATED,
     responses={
