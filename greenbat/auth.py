@@ -1,27 +1,10 @@
 import royalnet.royaltyping as t
 import pydantic as p
-import fastapi_cloudauth.auth0 as faca
+import fastapi as f
+import fastapi.security as fs
+import fastapi.openapi.models as fom
 
 
-class Auth0AccessClaims(p.BaseModel):
-    iss: str
-    sub: str
-    aud: t.Union[t.List[str], str]
-    iat: int
-    exp: int
-    azp: str
-    scope: str
-    permissions: t.List[str] = p.Field([])
-    name: str = p.Field(..., alias="https://meta.ryg.one/name")
-    picture: p.HttpUrl = p.Field(..., alias="https://meta.ryg.one/picture")
-
-    def has_permissions(self, *perms):
-        for perm in perms:
-            if perm not in self.permissions:
-                return False
-        else:
-            return True
-
-
-class Auth0User(faca.Auth0CurrentUser):
-    user_info = Auth0AccessClaims
+class OpenIDConnectDiscovery(fom.SecurityBase):
+    def __init__(self):
+        self.type_ = fom.SecuritySchemeType.openIdConnect
