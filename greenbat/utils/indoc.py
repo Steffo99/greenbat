@@ -23,13 +23,17 @@ def get_indentation_pattern(indentation: str) -> t.Pattern:
     return re.compile(f"^{indentation}")
 
 
-def indoc(string: str) -> str:
+def indoc(string: str) -> t.Optional[str]:
     """
     Strip indentation from `string`.
     """
 
     lines = string.split("\n")
     fl_index = get_first_line_with_content(lines)
+
+    if fl_index is None:
+        return None
+
     indentation = get_indentation(lines[fl_index])
     pattern = get_indentation_pattern(indentation)
 
