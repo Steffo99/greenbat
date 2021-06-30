@@ -40,7 +40,7 @@ def _(
     "/{id}",
     summary="Retrieve an element",
     description=indoc("""
-        Get the element with the specified `id`. 
+        Get detailed information about the element with the specified `id`. 
     """),
     response_model=models.retrieve.ElementRetrieve,
     responses={
@@ -52,7 +52,7 @@ def _(
 def _(
         *,
         session: so.Session = f.Depends(deps.dep_session),
-        id: int = f.Path(...),
+        id: int = f.Path(..., example=1),
 ):
     return queries.retrieve(session, tables.Element, tables.Element.id == id)
 
@@ -74,7 +74,7 @@ def _(
 def _(
         *,
         session: so.Session = f.Depends(deps.dep_session),
-        id: int = f.Path(...),
+        id: int = f.Path(..., example=1),
 ):
     return queries.destroy(session, tables.Element, tables.Element.id == id)
 
@@ -153,7 +153,7 @@ def _(
         *,
         session: so.Session = f.Depends(deps.dep_session),
         user: tables.User = f.Depends(deps.dep_user),
-        id: int = f.Path(...),
+        id: int = f.Path(..., example=1),
         data: models.edit.ElementEdit = f.Body(...),
 ):
     return queries.edit(session, tables.Element, ss.and_(tables.Element.id == id, tables.Element.owner == user), data)
@@ -177,7 +177,7 @@ def _(
         *,
         session: so.Session = f.Depends(deps.dep_session),
         user: tables.User = f.Depends(deps.dep_user),
-        id: int = f.Path(...),
+        id: int = f.Path(..., example=1),
 ):
     queries.destroy(session, tables.Element, ss.and_(tables.Element.id == id, tables.Element.owner == user))
 
@@ -200,8 +200,8 @@ def _(
         *,
         session: so.Session = f.Depends(deps.dep_session),
         user: tables.User = f.Depends(deps.dep_user),
-        id: int = f.Path(...),
-        rating: enums.Rating = f.Body(...)
+        id: int = f.Path(..., example=1),
+        rating: enums.Rating = f.Body(..., example=enums.Rating.LIKED)
 ):
     element = queries.retrieve(session, tables.Element, ss.and_(tables.Element.id == id, tables.Element.owner == user))
     element.rating = rating
@@ -227,8 +227,8 @@ def _(
         *,
         session: so.Session = f.Depends(deps.dep_session),
         user: tables.User = f.Depends(deps.dep_user),
-        id: int = f.Path(...),
-        completition: enums.Completition = f.Body(...)
+        id: int = f.Path(..., example=1),
+        completition: enums.Completition = f.Body(..., example=enums.Completition.COMPLETED)
 ):
     element = queries.retrieve(session, tables.Element, ss.and_(tables.Element.id == id, tables.Element.owner == user))
     element.completition = completition
