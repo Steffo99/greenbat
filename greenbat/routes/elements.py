@@ -12,6 +12,7 @@ import greenbat.database.tables as tables
 import greenbat.database.enums as enums
 import greenbat.utils.queries as queries
 import greenbat.auth as auth
+from greenbat.utils.indoc import indoc
 from greenbat.config import cfg
 
 
@@ -21,6 +22,9 @@ router = f.APIRouter()
 @router.get(
     "/",
     summary="List all elements in the database",
+    description=indoc("""
+        Get a paginated array of all the elements contained in the database.
+    """),
     response_model=list[models.get.ElementGet],
 )
 def _(
@@ -35,6 +39,9 @@ def _(
 @router.get(
     "/{id}",
     summary="Retrieve an element",
+    description=indoc("""
+        Get the element with the specified `id`. 
+    """),
     response_model=models.retrieve.ElementRetrieve,
     responses={
         404: {
@@ -53,6 +60,9 @@ def _(
 @router.delete(
     "/{id}",
     summary="Delete an element",
+    description=indoc("""
+        Permanently delete the element with the specified `id`.
+    """),
     status_code=status.HTTP_204_NO_CONTENT,
     response_class=f.Response,
     responses={
@@ -72,6 +82,9 @@ def _(
 @router.get(
     "/mine/",
     summary="List all elements in the library of the currently logged in user",
+    description=indoc("""
+        Get a paginated array listing all the elements having the currently logged in user as owner. 
+    """),
     response_model=list[models.get.ElementGet],
 )
 def _(
@@ -87,6 +100,9 @@ def _(
 @router.get(
     "/of/{sub}/",
     summary="List all elements in the library of the specified user",
+    description=indoc("""
+        Get a paginated array listing all the elements having the specified `sub` as owner. 
+    """),
     response_model=list[models.get.ElementGet],
 )
 def _(
@@ -102,6 +118,11 @@ def _(
 @router.post(
     "/mine/",
     summary="Add a new element to the library of the currently logged in user",
+    description=indoc("""
+        Create a new element with the passed `data` having the currently logged in user as owner.
+        
+        Obviously, _users cannot create elements for users other than themselves_!
+    """),
     status_code=status.HTTP_201_CREATED,
     response_model=models.retrieve.ElementRetrieve,
 )
@@ -117,6 +138,9 @@ def _(
 @router.put(
     "/mine/{id}",
     summary="Edit an element owned by the currently logged in user",
+    description=indoc("""
+        Edit the element with the passed `id` with `data`, but only if the owner is the currently logged in user.
+    """),
     status_code=status.HTTP_200_OK,
     response_model=models.retrieve.ElementRetrieve,
     responses={
@@ -138,6 +162,9 @@ def _(
 @router.delete(
     "/mine/{id}",
     summary="Delete an element owned by the currently logged in user",
+    description=indoc("""
+        Permanently delete the element with the passed `id`, but only if its owner is the currently logged in user.
+    """),
     status_code=status.HTTP_204_NO_CONTENT,
     response_class=f.Response,
     responses={
@@ -158,6 +185,9 @@ def _(
 @router.patch(
     "/mine/{id}/rating",
     summary="Rate an element owned by the currently logged in user.",
+    description=indoc("""
+        Quickly set the `rating` of the element with the passed `id`, but only if its owner is the currently logged in user.
+    """),
     status_code=status.HTTP_200_OK,
     response_model=models.retrieve.ElementRetrieve,
     responses={
@@ -181,6 +211,9 @@ def _(
 @router.patch(
     "/mine/{id}/completition",
     summary="Change completition for an element owned by the currently logged in user.",
+    description=indoc("""
+        Quickly set the `completition` of the element with the passed `id`, but only if its owner is the currently logged in user.
+    """),
     status_code=status.HTTP_200_OK,
     response_model=models.retrieve.ElementRetrieve,
     responses={
