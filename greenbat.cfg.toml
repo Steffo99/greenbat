@@ -1,8 +1,8 @@
 [database]
 uri = "postgresql://steffo@/greenbat"
 
-[authzero]
-domain = "ryg.eu.auth0.com"
+[auth]
+oidc = "https://ryg.eu.auth0.com/.well-known/openid-configuration"
 
 [api]
 alloworigins = ["*"]

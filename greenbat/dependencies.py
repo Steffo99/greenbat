@@ -1,4 +1,5 @@
 import fastapi as f
+import fastapi.security as fs
 import starlette.status as s
 import sqlalchemy.orm
 import greenbat.database.engine
@@ -8,9 +9,6 @@ import greenbat.auth
 import datetime
 
 
-dep_claims = greenbat.auth.Auth0User(domain=greenbat.config.cfg["authzero.domain"])
-
-
 def dep_session():
     with greenbat.database.engine.Session(future=True) as session:
         yield session
@@ -18,7 +16,7 @@ def dep_session():
 
 def dep_user(
         session: sqlalchemy.orm.Session = f.Depends(dep_session),
-        claims: greenbat.auth.Auth0AccessClaims = f.Depends(dep_claims),
+        claims: greenbat.auth.RYGLoginClaims = f.Depends(greenbat.auth.dep_claims),
 ):
     db_user = tables.User(
         sub=claims.sub,
@@ -32,7 +30,7 @@ def dep_user(
 
 
 def dep_perms(*perms: str):
-    def actual_dep(claims: greenbat.auth.Auth0AccessClaims = f.Depends(dep_claims)):
+    def actual_dep(claims: greenbat.auth.RYGLoginClaims = f.Depends(greenbat.auth.dep_claims)):
         if not claims.has_permissions(*perms):
             raise f.HTTPException(s.HTTP_403_FORBIDDEN, "Insufficient permissions or scope.")
     return actual_dep
