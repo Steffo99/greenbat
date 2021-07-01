@@ -2,7 +2,11 @@
 uri = "postgresql://steffo@/greenbat"
 
 [auth]
-oidc = "https://ryg.eu.auth0.com/.well-known/openid-configuration"
+authorization = "https://ryg.eu.auth0.com/authorize?audience=https://greenbat.ryg.one&prompt=consent"
+token = "https://ryg.eu.auth0.com/oauth/token"
+refresh = "https://ryg.eu.auth0.com/oauth/token"
+jwks = "https://ryg.eu.auth0.com/.well-known/jwks.json"
+audience = "https://greenbat.ryg.one"
 
 [api]
 alloworigins = ["*"]

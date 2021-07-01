@@ -5,9 +5,19 @@ import fastapi.security as fs
 import fastapi.openapi.models as fom
 import fastapi_cloudauth as fc
 import jose
+import jose.exceptions
 import jose.jwt
+import jose.jwk
+import requests
 
 from greenbat.config import cfg
+
+
+jwks = requests.get(cfg["auth.jwks"]).json()
+jwks = {jwk["kid"]: jwk for jwk in jwks.get("keys", [])}
+
+
+audience = cfg["auth.audience"]
 
 
 scheme = fs.OAuth2AuthorizationCodeBearer(
@@ -55,28 +65,3 @@ class RYGLoginClaims(p.BaseModel):
                 return False
         else:
             return True
-
-
-def dep_claims(
-        token: str = f.Depends(scheme)
-) -> RYGLoginClaims:
-    try:
-        payload = jose.jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-        if username is None:
-            raise credentials_exception
-        token_scopes = payload.get("scopes", [])
-        token_data = TokenData(scopes=token_scopes, username=username)
-    except (JWTError, ValidationError):
-        raise credentials_exception
-    user = get_user(fake_users_db, username=token_data.username)
-    if user is None:
-        raise credentials_exception
-    for scope in security_scopes.scopes:
-        if scope not in token_data.scopes:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Not enough permissions",
-                headers={"WWW-Authenticate": authenticate_value},
-            )
-    return user
