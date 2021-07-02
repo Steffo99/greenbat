@@ -30,7 +30,8 @@ scheme = fs.OAuth2AuthorizationCodeBearer(
         "profile": "[Required] Get information about the logged user",
 
         "create:element": "Create new elements on the user's behalf",
-        "edit:element": "Change the status of the user's elements",
+        "rate:element": "Rate elements on the user's behalf",
+        "complete:element": "Complete elements on the user's behalf",
         "destroy:element": "Delete the user's elements",
 
         "edit:any_game": "[Admin] Edit game metadata",
