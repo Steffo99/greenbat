@@ -73,6 +73,7 @@ def _(
 def _(
         *,
         session: so.Session = f.Depends(deps.dep_session),
+        _user: tables.User = f.Security(deps.dep_user, scopes=["destroy:any_game"]),
         id: int = f.Path(..., example=1),
 ):
     queries.destroy(session=session, table=tables.Game, condition=tables.Game.uuid == id)

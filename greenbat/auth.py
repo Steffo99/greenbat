@@ -32,7 +32,7 @@ scheme = fs.OAuth2AuthorizationCodeBearer(
         "destroy:any_game": "[Admin] Delete games",
 
         "create:game_custom": "Create new games with custom metadata on the user's behalf",
-        "edit:game_custom": "Edit the games with custom metadata created by the user",
+        # "edit:game_custom": "Edit the games with custom metadata created by the user",
         "destroy:game_custom": "Delete the games with custom metadata created by the user",
 
         "create:game_steam": "[Admin] Manually create new games with steam metadata",

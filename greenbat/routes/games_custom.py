@@ -48,7 +48,7 @@ def _(
 def _(
         *,
         session: so.Session = f.Depends(deps.dep_session),
-        user: tables.User = f.Depends(deps.dep_user),
+        user: tables.User = f.Security(deps.dep_user),
         limit: int = f.Query(cfg["api.list.maxlimit"], le=cfg["api.list.maxlimit"]),
         offset: int = f.Query(0, ge=0),
 ):
@@ -69,7 +69,7 @@ def _(
 def _(
         *,
         session: so.Session = f.Depends(deps.dep_session),
-        user: tables.User = f.Depends(deps.dep_user),
+        user: tables.User = f.Security(deps.dep_user, scopes=["create:game_custom"]),
         metadata_custom: models.edit.MetadataCustomEdit = f.Body(...),
 ):
     game = tables.Game()
@@ -106,7 +106,7 @@ def _(
 def _(
         *,
         session: so.Session = f.Depends(deps.dep_session),
-        user: tables.User = f.Depends(deps.dep_user),
+        user: tables.User = f.Security(deps.dep_user, scopes=["destroy:game_custom"]),
         id: int = f.Path(..., example=1),
 ):
     game = queries.retrieve(session, tables.Game, tables.Game.id == id)
