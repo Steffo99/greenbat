@@ -23,6 +23,7 @@ scheme = fs.OAuth2AuthorizationCodeBearer(
         "profile": "[Required] Get information about the logged user",
 
         "create:element": "Create new elements on the user's behalf",
+        "move:element": "Change the game an element is associated to on the user's behalf",
         "rate:element": "Rate elements on the user's behalf",
         "complete:element": "Complete elements on the user's behalf",
         "destroy:element": "Delete the user's elements",
