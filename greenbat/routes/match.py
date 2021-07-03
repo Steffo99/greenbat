@@ -34,7 +34,8 @@ def _(
         session: so.Session = f.Depends(deps.dep_session),
         subs: list[str] = f.Query(..., min_length=2),
 ):
-    elements: t.Iterable[list[tables.Element]] = map(lambda sub: sub.elements, subs)
+    users: t.Iterable[list[tables.User]] = map(lambda sub: session.execute(ss.select(tables.User).where(tables.User.sub == sub)), subs)
+    elements: t.Iterable[list[tables.Element]] = map(lambda sub: sub.elements, users)
     games: t.Iterable[set[tables.Game]] = map(lambda elist: set(map(lambda e: e.game, elist)), elements)
     return reduce(lambda p, n: p.intersection(n), games)
 
@@ -54,6 +55,7 @@ def _(
         session: so.Session = f.Depends(deps.dep_session),
         subs: list[str] = f.Query(..., min_length=2),
 ):
-    elements: t.Iterable[list[tables.Element]] = map(lambda sub: sub.elements, subs)
+    users: t.Iterable[list[tables.User]] = map(lambda sub: session.execute(ss.select(tables.User).where(tables.User.sub == sub)), subs)
+    elements: t.Iterable[list[tables.Element]] = map(lambda sub: sub.elements, users)
     games: t.Iterable[set[tables.Game]] = map(lambda elist: set(map(lambda e: e.game, elist)), elements)
     return reduce(lambda p, n: p.union(n), games)
