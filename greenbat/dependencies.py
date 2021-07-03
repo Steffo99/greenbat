@@ -38,7 +38,7 @@ def dep_scoped_claims(
         claims: auth.RYGLoginClaims = f.Depends(dep_claims),
 ) -> auth.RYGLoginClaims:
     if missing := claims.missing_permissions(set(required_scopes.scopes)):
-        raise f.HTTPException(f.status.HTTP_403_FORBIDDEN, f"The following OAuth2 scopes are missing: {missing!r}")
+        raise f.HTTPException(f.status.HTTP_401_UNAUTHORIZED, f"The following OAuth2 scopes are missing: {missing!r}")
     return claims
 
 
