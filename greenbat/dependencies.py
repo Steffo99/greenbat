@@ -33,9 +33,18 @@ def dep_claims(
     return auth.RYGLoginClaims(**payload)
 
 
+def dep_scoped_claims(
+        required_scopes: fs.SecurityScopes,
+        claims: auth.RYGLoginClaims = f.Depends(dep_claims),
+) -> auth.RYGLoginClaims:
+    if missing := claims.missing_permissions(set(required_scopes.scopes)):
+        raise f.HTTPException(f.status.HTTP_403_FORBIDDEN, f"The following OAuth2 scopes are missing: {missing!r}")
+    return claims
+
+
 def dep_user(
         session: sqlalchemy.orm.Session = f.Depends(dep_session),
-        claims: auth.RYGLoginClaims = f.Depends(dep_claims),
+        claims: auth.RYGLoginClaims = f.Security(dep_scoped_claims, scopes=["profile", "email"]),
 ):
     db_user = tables.User(
         sub=claims.sub,
@@ -46,10 +55,3 @@ def dep_user(
     db_user = session.merge(db_user)
     session.commit()
     return db_user
-
-
-def dep_perms(*perms: str):
-    def actual_dep(claims: auth.RYGLoginClaims = f.Depends(dep_claims)):
-        if not claims.has_permissions(*perms):
-            raise f.HTTPException(s.HTTP_403_FORBIDDEN, "Insufficient permissions or scope.")
-    return actual_dep

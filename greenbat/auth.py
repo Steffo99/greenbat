@@ -49,13 +49,9 @@ class RYGLoginClaims(p.BaseModel):
     exp: int
     azp: str
     scope: str
-    permissions: t.List[str] = p.Field([])
+    permissions: t.Set[str] = p.Field(set())
     name: str = p.Field(..., alias="https://meta.ryg.one/name")
     picture: p.HttpUrl = p.Field(..., alias="https://meta.ryg.one/picture")
 
-    def has_permissions(self, *perms):
-        for perm in perms:
-            if perm not in self.permissions:
-                return False
-        else:
-            return True
+    def missing_permissions(self, required: set[str]) -> set[str]:
+        return required - self.permissions
