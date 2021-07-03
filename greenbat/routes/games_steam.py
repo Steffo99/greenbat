@@ -95,6 +95,7 @@ def _(
 def _(
         *,
         session: so.Session = f.Depends(deps.dep_session),
+        _user: tables.User = f.Security(deps.dep_user, scopes=["create:game_steam"]),
         metadata_steam: models.edit.MetadataSteamEdit = f.Body(...),
 ):
     if meta := session.execute(ss.select(tables.MetadataSteam).where(tables.MetadataSteam.appid) == metadata_steam.appid).one_or_none():

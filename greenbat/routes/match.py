@@ -40,8 +40,8 @@ def _(
         session: so.Session = f.Depends(deps.dep_session),
         subs: list[str] = f.Query(..., min_length=2, example=["auth0|5ed2debf7308300c1ea230c3", "auth0|5f3814421704af006de0c2e3"]),
 ):
-    # FIXME: get users from subs!
-    elements: t.Iterable[list[tables.Element]] = map(lambda sub: sub.elements, subs)
+    users: t.Iterable[list[tables.User]] = map(lambda sub: session.execute(ss.select(tables.User).where(tables.User.sub == sub)), subs)
+    elements: t.Iterable[list[tables.Element]] = map(lambda sub: sub.elements, users)
     games: t.Iterable[set[tables.Game]] = map(lambda elist: set(map(lambda e: e.game, elist)), elements)
     return reduce(lambda p, n: p.intersection(n), games)
 
@@ -66,7 +66,7 @@ def _(
         session: so.Session = f.Depends(deps.dep_session),
         subs: list[str] = f.Query(..., min_length=2, example=["auth0|5ed2debf7308300c1ea230c3", "auth0|5f3814421704af006de0c2e3"]),
 ):
-    # FIXME: get users from subs!
-    elements: t.Iterable[list[tables.Element]] = map(lambda sub: sub.elements, subs)
+    users: t.Iterable[list[tables.User]] = map(lambda sub: session.execute(ss.select(tables.User).where(tables.User.sub == sub)), subs)
+    elements: t.Iterable[list[tables.Element]] = map(lambda sub: sub.elements, users)
     games: t.Iterable[set[tables.Game]] = map(lambda elist: set(map(lambda e: e.game, elist)), elements)
     return reduce(lambda p, n: p.union(n), games)

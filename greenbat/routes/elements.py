@@ -90,7 +90,7 @@ def _(
 def _(
         *,
         session: so.Session = f.Depends(deps.dep_session),
-        user: tables.User = f.Depends(deps.dep_user),
+        user: tables.User = f.Security(deps.dep_user),
         limit: int = f.Query(cfg["api.list.maxlimit"], le=cfg["api.list.maxlimit"]),
         offset: int = f.Query(0, ge=0),
 ):
@@ -129,7 +129,7 @@ def _(
 def _(
         *,
         session: so.Session = f.Depends(deps.dep_session),
-        user: tables.User = f.Depends(deps.dep_user),
+        user: tables.User = f.Security(deps.dep_user, scopes=["create:element"]),
         data: models.edit.ElementEdit = f.Body(...),
 ):
     return queries.create(session=session, table=tables.Element, model_data=data, owner=user)
@@ -152,7 +152,7 @@ def _(
 def _(
         *,
         session: so.Session = f.Depends(deps.dep_session),
-        user: tables.User = f.Depends(deps.dep_user),
+        user: tables.User = f.Security(deps.dep_user, scopes=["rate:element", "complete:element", "move:element"]),
         id: int = f.Path(..., example=1),
         data: models.edit.ElementEdit = f.Body(...),
 ):
@@ -176,7 +176,7 @@ def _(
 def _(
         *,
         session: so.Session = f.Depends(deps.dep_session),
-        user: tables.User = f.Depends(deps.dep_user),
+        user: tables.User = f.Security(deps.dep_user, scopes=["destroy:element"]),
         id: int = f.Path(..., example=1),
 ):
     queries.destroy(session, tables.Element, ss.and_(tables.Element.id == id, tables.Element.owner == user))
@@ -199,7 +199,7 @@ def _(
 def _(
         *,
         session: so.Session = f.Depends(deps.dep_session),
-        user: tables.User = f.Depends(deps.dep_user),
+        user: tables.User = f.Security(deps.dep_user, scopes=["rate:element"]),
         id: int = f.Path(..., example=1),
         rating: enums.Rating = f.Body(..., example=enums.Rating.LIKED)
 ):
@@ -226,7 +226,7 @@ def _(
 def _(
         *,
         session: so.Session = f.Depends(deps.dep_session),
-        user: tables.User = f.Depends(deps.dep_user),
+        user: tables.User = f.Security(deps.dep_user, scopes=["complete:element"]),
         id: int = f.Path(..., example=1),
         completition: enums.Completition = f.Body(..., example=enums.Completition.COMPLETED)
 ):

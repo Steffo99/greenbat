@@ -32,7 +32,7 @@ def _(
 )
 def _(
         *,
-        user: tables.User = f.Depends(deps.dep_user),
+        user: tables.User = f.Security(deps.dep_user),
 ):
     return user
 
